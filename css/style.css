@@ -1,0 +1,207 @@
+ /* --- Reset mínimo --- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, 
+    body { 
+        height: 100%; 
+    }
+    body { 
+        background:#0e0e10; 
+        color:#fafafa; 
+        margin: 0;  
+    }
+
+    .scene {      
+      height: 900vh;
+      position: relative;
+    }
+    .scene .flecha-bajar {
+        bottom: 10%;
+        cursor: pointer;
+
+        margin: 0 auto;
+        max-width: 40px;
+        position: relative;
+        z-index: 10;
+    }
+        .flecha-bajar {
+            animation: vaiven-mano 2.5s ease-in-out infinite;
+        }
+        @keyframes vaiven-mano {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(20px); }
+            100% { transform: translateY(0); }
+        }
+
+    .stage {
+        background: #111;
+        height: 100vh;
+        isolation: isolate; /* asegura que los filters/shadows no sangren */
+        overflow: hidden;
+        position: sticky;
+        top: 0;        
+    }
+        .box-titular{
+            left: 50%;
+            max-width: 650px;
+            position: absolute;
+            text-align: center;
+            top: 50%;;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+            .box-titular h1{
+                font: 3rem/1.2 "Roboto", sans-serif;
+                font-weight: 600;
+                margin: 0 auto 10px;
+            }
+            .box-titular h2{
+                font: 1.3rem/1.5 "Roboto", sans-serif;
+                margin: 0 auto 10px;
+            }
+        .bg {
+            background: #000;
+            display: grid;
+            inset: 0;
+            place-items: center;
+            position: absolute; 
+            z-index: 1;            
+        }
+            .bg img {
+                height: 100%;
+                width: 100%;               
+                object-fit: cover; 
+                opacity: 0.98;
+                filter: saturate(1.05);                
+            }    
+    .overlays {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none; 
+    }
+        .item {
+            position: absolute;
+            /* Posicionamiento responsive por variables CSS (en % del viewport) */
+            left: calc(var(--x, 50) * 1%);
+            top:  calc(var(--y, 50) * 1%);
+            width: clamp(140px, var(--w, 30) * 1vw, 60vmin);
+            transform: translate(-50%, -50%) translateY(16px) scale(0.985);
+            opacity: 0;
+            filter: drop-shadow(0 6px 24px rgba(0,0,0,0.35));
+            transition: opacity 480ms ease, transform 600ms cubic-bezier(.2,.65,.2,1);
+        }
+            .item.visible {
+                opacity: 1;
+                transform: translate(-50%, -50%) translateY(0) scale(1);
+            }
+        .item img, .item video {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: clamp(8px, 1.2vmin, 24px);
+        }
+
+    /* --- Pasos invisibles que controlan el reveal --- */
+    .steps {
+      position: relative;
+      z-index: 0;
+    }
+    .step {
+      height: 120vh; /* Altura de cada hito. Ajusta según cuán pausado quieras el reveal. */
+    }
+
+    .item.bg-1 {         
+        --w: 26; 
+        --x: 20; 
+        --y: 65;
+    }
+    .item.bg-2 {         
+        --w: 26; 
+        --x: 52; 
+        --y: 65;
+    }
+    .item.bg-3 {         
+        --w: 20; 
+        --x: 10; 
+        --y: 48;
+    }
+    .item.bg-4 {         
+        --w: 26; 
+        --x: 80; 
+        --y: 38;
+    }
+
+    .item.video-1{
+        --w: 30;
+        --x: 68; 
+        --y: 34; 
+    }
+    .item.video-2{
+        --w: 24;
+        --x: 30; 
+        --y: 28; 
+    }
+    .item.video-3{
+        --w: 33;
+        --x: 70; 
+        --y: 72; 
+    }
+
+
+    /* --- Ayudas visuales opcionales para debug  --- */
+    /*.step { outline: 1px dashed rgba(255,255,255,.12); } */
+
+    @media (max-width: 640px) {
+
+        .box-titular{
+            top: 35%;
+            width: 100%;
+        }
+        .item.bg-1 { 
+            --w: 52;
+            --x: 20; 
+            --y: 65; 
+        }
+        .item.bg-2 {         
+            --w: 56; 
+            --x: 60; 
+            --y: 76;
+        }
+        .item.bg-3 {         
+            --w: 55; 
+            --x: 22; 
+            --y: 83;
+        }
+        .item.bg-4 {         
+            --w: 41; 
+            --x: 65; 
+            --y: 75;
+        }
+
+        .item.video-1{
+            --w: 50;
+            --x: 50; 
+            --y: 34; 
+        }
+        .item.video-2{
+            --w: 50;
+            --x: 22; 
+            --y: 41; 
+        }
+        .item.video-3{
+            --w: 60;
+            --x: 47; 
+            --y: 84; 
+        }
+
+    }
+
+    @media (max-width: 768px) {
+      .item { width: clamp(120px, var(--w, 46) * 1vw, 70vmin); }
+
+    }
+
+
+    
+
+    .bg picture { width: 100%; height: 100%; display: block; }

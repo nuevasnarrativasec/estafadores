@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Estafadores</title>
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <section class="scene">   
+
+        <div class="stage" aria-hidden="true">
+            <div class="box-titular">
+                <h1>Los estafadores de los viajes</h1>
+                <h2>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</h2>
+                <img src="https://nuevasnarrativasec.github.io/discurso-dina-vs-dina-2025/img/mano-scroll.png" alt="bajar" width="100%" class="flecha-bajar">
+            </div>
+            
+            <div class="bg">
+                <picture>
+                    <source media="(max-width: 768px)" srcset="./img/bg-portada-movil.jpg?v2" />
+                    <img src="./img/bg-portada.jpg?v2" alt="Fondo con dos rostros" />
+                </picture>
+            </div>
+
+            <div class="overlays" id="overlays">
+
+                <figure class="item bg-1" data-step="1">
+                    <img src="./img/yape-1.png" alt="Elemento 1" loading="lazy" />
+                </figure>
+
+                <figure class="item video-1" data-step="2">
+                    <video muted playsinline loop preload="metadata" aria-label="Video montado 1">
+                        <source src="./video/video-1.mp4" type="video/mp4" />
+                    </video>
+                </figure>
+
+                <figure class="item bg-2" data-step="3">
+                    <img src="./img/boleta-1.png" alt="Elemento 2" loading="lazy" />
+                </figure>
+
+                <figure class="item video-2" data-step="4">
+                    <video muted playsinline loop preload="metadata" aria-label="Video montado 2">
+                        <source src="./video/video-2.mp4" type="video/mp4" />
+                    </video>
+                </figure>
+
+                <figure class="item bg-3" data-step="5">
+                    <img src="./img/boleta-2.png" alt="Elemento 3" loading="lazy" />
+                </figure>
+
+                <figure class="item bg-4" data-step="6">
+                    <img src="./img/plin-1.png" alt="Elemento 4" loading="lazy" />
+                </figure>
+
+                <figure class="item video-3"  data-step="7">
+                    <video muted playsinline loop preload="metadata" aria-label="Video montado 2">
+                        <source src="./video/video-3.mp4" type="video/mp4" />
+                    </video>
+                </figure>
+
+            </div>
+        </div>       
+
+    <!--
+      Estos .step son "marcadores" de scroll. No muestran nada, pero disparan la aparición.
+      - data-step="1" hará visibles todos los items con data-step <= 1
+      - data-step="2" mostrará los <= 2, etc.
+    -->
+        <div class="steps" aria-hidden="true">
+            <div class="step" data-step="1"></div>
+            <div class="step" data-step="2"></div>
+            <div class="step" data-step="3"></div>
+            <div class="step" data-step="4"></div>
+            <div class="step" data-step="5"></div>
+            <div class="step" data-step="6"></div>
+            <div class="step" data-step="7"></div>
+        </div>
+    </section>
+
+    <div>
+        <p>contenido de la nota</p>
+    </div>
+
+    <script>
+    // Reveal acumulativo con reverse al volver a scrollear hacia arriba.
+    (function () {
+      const steps = Array.from(document.querySelectorAll('.step'));
+      const items = Array.from(document.querySelectorAll('.item'));
+
+      let currentStep = 0;
+      let ticking = false;
+
+      function computeStep() {
+        // Centro virtual del viewport (similar al threshold anterior 0.55)
+        const viewportCenter = window.innerHeight * 0.55;
+        let lastPassed = 0;
+        for (const step of steps) {
+          const rect = step.getBoundingClientRect();
+          // Si el top del step ya pasó el centro del viewport, lo contamos como "activado".
+          if (rect.top <= viewportCenter) {
+            const idx = Number(step.getAttribute('data-step')) || 0;
+            if (idx > lastPassed) lastPassed = idx;
+          }
+        }
+        if (lastPassed !== currentStep) {
+          currentStep = lastPassed;
+          updateVisibility();
+        }
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(() => {
+            computeStep();
+            ticking = false;
+          });
+        }
+      }
+
+      function updateVisibility() {
+        for (const el of items) {
+          const showAt = Number(el.getAttribute('data-step')) || 0;
+          const shouldShow = showAt <= currentStep; // 👈 acumulativo + reversible
+          el.classList.toggle('visible', shouldShow);
+
+          const vid = el.querySelector('video');
+          if (vid) {
+            if (shouldShow) {
+              const playPromise = vid.play();
+              if (playPromise && typeof playPromise.catch === 'function') {
+                playPromise.catch(() => {});
+              }
+            } else {
+              vid.pause();
+              try { vid.currentTime = 0; } catch (_) {}
+            }
+          }
+        }
+      }
+
+      // Inicialización
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', () => {
+        // Recalcular inmediatamente en resize/orientationchange
+        computeStep();
+      });
+
+      // Primera evaluación (por si cargas en medio del documento)
+      computeStep();
+    })();
+  </script>
+
+  <!--  
+    🧪 Tip: si deseas que NO sea acumulativo (mostrar solo uno a la vez),
+    cambia shouldShow por (showAt === currentStep) en updateVisibility().
+  -->
+</body>
+</html>
