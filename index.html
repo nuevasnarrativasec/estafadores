@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Estafadores</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style.css?v8">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,40 +14,45 @@
 <body>
 
     <section class="scene">   
-
+        <button id="soundToggle" class="sound-toggle" type="button" aria-pressed="false" aria-label="Activar audio">🔇 Activar audio</button>
         <div class="stage" aria-hidden="true">
+            
             <div class="box-titular">
-                <h1>Los estafadores de los viajes</h1>
-                <h2>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</h2>
+                <h1>
+                    <span>cazando</span>
+                    estafa <br> dores
+                </h1>
+                <h2>Lorem Ipsum is simply dummy text of the printing and <span>typesetting industry.</span> Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s.</h2>
                 <img src="https://nuevasnarrativasec.github.io/discurso-dina-vs-dina-2025/img/mano-scroll.png" alt="bajar" width="100%" class="flecha-bajar">
+            
             </div>
             
             <div class="bg">
                 <picture>
-                    <source media="(max-width: 768px)" srcset="./img/bg-portada-movil.jpg?v2" />
-                    <img src="./img/bg-portada.jpg?v2" alt="Fondo con dos rostros" />
+                    <source media="(max-width: 768px)" srcset="./img/bg-portada-movil-2.jpg?v3" />
+                    <img src="./img/bg-portada-2.jpg?v3" alt="rostros" />
                 </picture>
             </div>
 
             <div class="overlays" id="overlays">
 
-                <figure class="item bg-1" data-step="1">
+                <figure class="item bg-1" data-step="1" data-anim="left">
                     <img src="./img/yape-1.png" alt="Elemento 1" loading="lazy" />
                 </figure>
 
-                <figure class="item video-1" data-step="2">
+                <figure class="item video-1" data-step="2" data-anim="right">
                     <video muted playsinline loop preload="metadata" aria-label="Video montado 1">
-                        <source src="./video/video-1.mp4" type="video/mp4" />
+                        <source src="./video/video-audio-2.mp4" type="video/mp4" />
                     </video>
                 </figure>
 
-                <figure class="item bg-2" data-step="3">
+                <figure class="item bg-2" data-step="3" data-anim="top">
                     <img src="./img/boleta-1.png" alt="Elemento 2" loading="lazy" />
                 </figure>
 
-                <figure class="item video-2" data-step="4">
+                <figure class="item video-2" data-step="4" data-anim="bottom">
                     <video muted playsinline loop preload="metadata" aria-label="Video montado 2">
-                        <source src="./video/video-2.mp4" type="video/mp4" />
+                        <source src="./video/video-audio-1.mp4" type="video/mp4" />
                     </video>
                 </figure>
 
@@ -59,9 +64,9 @@
                     <img src="./img/plin-1.png" alt="Elemento 4" loading="lazy" />
                 </figure>
 
-                <figure class="item video-3"  data-step="7">
-                    <video muted playsinline loop preload="metadata" aria-label="Video montado 2">
-                        <source src="./video/video-3.mp4" type="video/mp4" />
+                <figure class="item video-3"  data-step="7" data-anim="bottom">
+                    <video muted playsinline loop preload="metadata" aria-label="Video montado 3">
+                        <source src="./video/video-audio-3.mp4" type="video/mp4" />
                     </video>
                 </figure>
 
@@ -86,77 +91,211 @@
 
     <div>
         <p>contenido de la nota</p>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
     </div>
 
     <script>
-    // Reveal acumulativo con reverse al volver a scrollear hacia arriba.
-    (function () {
-      const steps = Array.from(document.querySelectorAll('.step'));
-      const items = Array.from(document.querySelectorAll('.item'));
+        // Reveal acumulativo con reverse + control de audio SOLO (no solapado)
+        (function () {
+            const steps = Array.from(document.querySelectorAll('.step'));
+            const items = Array.from(document.querySelectorAll('.item'));
+            const stage = document.querySelector('.stage');
+            const soundToggle = document.getElementById('soundToggle');
 
-      let currentStep = 0;
-      let ticking = false;
+            let currentStep = 0;
+            let ticking = false;
+            let soundOn = false; // se habilita con clic del usuario
+            let currentPrimaryEl = null; // item visible cuyo audio suena
 
-      function computeStep() {
-        // Centro virtual del viewport (similar al threshold anterior 0.55)
-        const viewportCenter = window.innerHeight * 0.55;
-        let lastPassed = 0;
-        for (const step of steps) {
-          const rect = step.getBoundingClientRect();
-          // Si el top del step ya pasó el centro del viewport, lo contamos como "activado".
-          if (rect.top <= viewportCenter) {
-            const idx = Number(step.getAttribute('data-step')) || 0;
-            if (idx > lastPassed) lastPassed = idx;
-          }
-        }
-        if (lastPassed !== currentStep) {
-          currentStep = lastPassed;
-          updateVisibility();
-        }
-      }
 
-      function onScroll() {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(() => {
-            computeStep();
-            ticking = false;
-          });
-        }
-      }
-
-      function updateVisibility() {
-        for (const el of items) {
-          const showAt = Number(el.getAttribute('data-step')) || 0;
-          const shouldShow = showAt <= currentStep; // 👈 acumulativo + reversible
-          el.classList.toggle('visible', shouldShow);
-
-          const vid = el.querySelector('video');
-          if (vid) {
-            if (shouldShow) {
-              const playPromise = vid.play();
-              if (playPromise && typeof playPromise.catch === 'function') {
-                playPromise.catch(() => {});
-              }
-            } else {
-              vid.pause();
-              try { vid.currentTime = 0; } catch (_) {}
+            function computeStep() {
+                const viewportCenter = window.innerHeight * 0.55;
+                let lastPassed = 0;
+                for (const step of steps) {
+                    const rect = step.getBoundingClientRect();
+                    if (rect.top <= viewportCenter) {
+                        const idx = Number(step.getAttribute('data-step')) || 0;
+                    if (idx > lastPassed) lastPassed = idx;
+                    }
+                }
+                if (lastPassed !== currentStep) {
+                    currentStep = lastPassed;
+                    updateVisibility();
+                }
             }
-          }
-        }
-      }
 
-      // Inicialización
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', () => {
-        // Recalcular inmediatamente en resize/orientationchange
-        computeStep();
-      });
+            function onScroll() {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(() => {
+                    computeStep();
+                    ticking = false;
+                    });
+                }
+            }
 
-      // Primera evaluación (por si cargas en medio del documento)
-      computeStep();
-    })();
-  </script>
+            function applyVideoPlayback(el, shouldShow) {
+            const vid = el.querySelector('video');
+                if (!vid) return;
+                if (shouldShow) {
+                    const p = vid.play();
+                    if (p && typeof p.catch === 'function') p.catch(() => {});
+                } else {
+                    vid.pause();
+                    vid.muted = true;
+                    try { vid.currentTime = 0; } catch (_) {}
+                }
+            }
+
+            function pickPrimaryVisible() {
+                // Candidatos: visibles, con video y sin data-no-audio
+                const candidates = items.filter(el =>
+                    el.classList.contains('visible') &&
+                    el.querySelector('video') &&
+                    !el.hasAttribute('data-no-audio')
+                );
+                if (!candidates.length) return null;
+
+
+                // Selección por proximidad al centro del viewport (más natural)
+                const cx = window.innerWidth / 2;
+                const cy = window.innerHeight / 2;
+                let best = candidates[0];
+                let bestDist2 = Infinity;
+                for (const el of candidates) {
+                    const r = el.getBoundingClientRect();
+                    const ex = r.left + r.width / 2;
+                    const ey = r.top + r.height / 2;
+                    const dx = ex - cx;
+                    const dy = ey - cy;
+                    const d2 = dx*dx + dy*dy;
+                    if (d2 < bestDist2) { bestDist2 = d2; best = el; }
+                }
+                return best;
+            }
+
+            function enforceSoloAudio() {
+                const primary = pickPrimaryVisible();
+                currentPrimaryEl = primary;
+                for (const el of items) {
+                    const vid = el.querySelector('video');
+                    if (!vid) continue;
+                    const isVisible = el.classList.contains('visible');
+                    const isPrimary = primary && el === primary && isVisible;
+
+                    // Política de sonido: sólo el primario se desmutea si soundOn
+                    vid.muted = !(soundOn && isPrimary);
+
+                    // Mantén animación: visibles siguen reproduciendo (muted), ocultos pausados
+                    if (!isVisible) {
+                        vid.pause();
+                        try { vid.currentTime = 0; } catch (_) {}
+                    } else {
+                        const p = vid.play();
+                        if (p && typeof p.catch === 'function') p.catch(() => {});
+                    }
+                }
+            }
+
+            function updateVisibility() {
+                for (const el of items) {
+                const showAt = Number(el.getAttribute('data-step')) || 0;
+                const shouldShow = showAt <= currentStep; // acumulativo + reversible
+                el.classList.toggle('visible', shouldShow);
+                applyVideoPlayback(el, shouldShow);
+                }
+                // Tras actualizar visibilidad, asegura SOLO un audio
+                enforceSoloAudio();
+            }
+
+            // Botón de sonido
+            if (soundToggle) {
+                soundToggle.addEventListener('click', () => {
+                    soundOn = !soundOn;
+                    soundToggle.setAttribute('aria-pressed', String(soundOn));
+                    soundToggle.textContent = soundOn ? '🔊 Audio activado' : '🔇 Activar audio';
+                    enforceSoloAudio();
+                });               
+                soundToggle.textContent = soundOn ? '🔊 Audio activado' : '🔇 Activar audio';
+                enforceSoloAudio();
+            }
+
+            // Si sale de la sección, pausar todo y limpiar primario
+            const stageObserver = new IntersectionObserver(entries => {
+            const e = entries[0];
+            const inView = e.isIntersecting && e.intersectionRatio > 0.05;
+            if (!inView) {
+            for (const el of items) {
+            const vid = el.querySelector('video');
+            if (!vid) continue;
+            vid.muted = true;
+            vid.pause();
+            try { vid.currentTime = 0; } catch (_) {}
+            }
+            currentPrimaryEl = null;
+            } else {
+            updateVisibility();
+            }
+            }, { threshold: [0, 0.05, 0.2, 0.5, 1] });
+            if (stage) stageObserver.observe(stage);
+
+            // Inicialización
+            window.addEventListener('scroll', onScroll, { passive: true });
+            window.addEventListener('resize', computeStep);
+            computeStep();
+
+        })();
+    </script>
 
   <!--  
     🧪 Tip: si deseas que NO sea acumulativo (mostrar solo uno a la vez),
