@@ -2,7 +2,12 @@
     *, *::before, *::after { box-sizing: border-box; }
     html, 
     body { 
+        box-sizing: border-box;   
         height: 100%; 
+        font-weight: normal;
+        font-style: normal;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
     body { 
         background:#0e0e10; 
@@ -10,8 +15,14 @@
         margin: 0;  
     }
 
+    @font-face {
+        font-family: 'glitch_sevenregular';
+        src: url('../fonts/glitch_seven-webfont.woff2') format('woff2'),
+            url('../fonts/glitch_seven-webfont.woff') format('woff');  
+    }
+
     .scene {      
-      height: 900vh;
+      height: 1000vh;
       position: relative;
     }
     .scene .flecha-bajar {
@@ -50,14 +61,22 @@
             z-index: 2;
         }
             .box-titular h1{
-                font: 3rem/1.2 "Roboto", sans-serif;
-                font-weight: 600;
+                font: 8rem/0.8 'glitch_sevenregular';
                 margin: 0 auto 10px;
             }
+                .box-titular h1 span{
+                    display: block;
+                    font-size: 4rem;
+                    margin-bottom: 10px;
+                }
             .box-titular h2{
-                font: 1.3rem/1.5 "Roboto", sans-serif;
+                font: 1.3rem/1.5 'glitch_sevenregular';
                 margin: 0 auto 10px;
+                max-width: 400px;
             }
+                .box-titular h2 span{
+                    color: #3EF0FF;
+                }
         .bg {
             background: #000;
             display: grid;
@@ -107,45 +126,112 @@
       z-index: 0;
     }
     .step {
-      height: 120vh; /* Altura de cada hito. Ajusta según cuán pausado quieras el reveal. */
+      height: 110vh; /* Altura de cada hito. Ajusta según cuán pausado quieras el reveal. */
     }
 
     .item.bg-1 {         
-        --w: 26; 
-        --x: 20; 
-        --y: 65;
+        --w: 21; 
+        --x: 15; 
+        --y: 30;
+        --enter-offset-x: 120vw;
+        --tx-final: -50%;        
     }
     .item.bg-2 {         
-        --w: 26; 
-        --x: 52; 
+        --w: 25; 
+        --x: 65; 
         --y: 65;
+        --enter-offset-y: 120vw;
+        --ty-final: -50%;      
     }
     .item.bg-3 {         
-        --w: 20; 
-        --x: 10; 
+        --w: 17; 
+        --x: 40; 
         --y: 48;
     }
     .item.bg-4 {         
-        --w: 26; 
-        --x: 80; 
-        --y: 38;
+        --w: 16;
+        --x: 88;
+        --y: 68;
     }
 
     .item.video-1{
         --w: 30;
         --x: 68; 
-        --y: 34; 
+        --y: 24; 
+        --enter-offset-x: 50vw;
+        --tx-final: -10%;        
     }
     .item.video-2{
         --w: 24;
-        --x: 30; 
-        --y: 28; 
+        --x: 20; 
+        --y: 38; 
+        --enter-offset-y: -120vw;
+        --ty-final: 50%;      
     }
     .item.video-3{
         --w: 33;
-        --x: 70; 
+        --x: 50; 
         --y: 72; 
+        --enter-offset-y: -120vw;
+        --ty-final: -90%;      
     }
+
+    /* === Variantes de entrada (dinámicas) ===
+       Usa data-anim="right|left|top|bottom" en cada .item para definir la dirección de entrada.
+       Puedes ajustar la distancia con variables: --enter-vw (para izquierda/derecha) y --enter-vh (para arriba/abajo). */
+    
+    .item[data-anim="right"] {
+        /* entra desde la derecha hacia el centro */
+        transform: translate(calc(-50% + var(--enter-offset-x, 110vw)), -50%) scale(0.98);
+    }
+        .item[data-anim="right"].visible {
+            transform: translate(var(--tx-final, -50%), -50%) scale(1);
+        }
+
+    .item[data-anim="left"] {
+        transform: translate(calc(-50% - var(--enter-offset-x, 110vw)), -50%) scale(0.98);
+    }
+        .item[data-anim="left"].visible {
+            transform: translate(var(--tx-final, -10%), -50%) scale(1);
+        }
+
+    .item[data-anim="top"] {
+       transform: translate(-50%, calc(-50% - var(--enter-offset-y, 110vh))) scale(0.98);
+    }
+        .item[data-anim="top"].visible {
+           transform: translate(-50%, var(--ty-final, -50%)) scale(1);
+        }
+
+    .item[data-anim="bottom"] {
+        transform: translate(-50%, calc(-50% - var(--enter-offset-y, 110vh))) scale(0.98);
+    }
+        .item[data-anim="bottom"].visible {
+            transform: translate(-50%, var(--ty-final, -50%)) scale(1);
+        }
+
+    /* Suavizado un poco más largo para entradas laterales/verticales */
+    .item[data-anim] { transition: opacity 520ms ease, transform 820ms cubic-bezier(.2,.65,.2,1); }
+
+    /* --- Control de audio --- */
+    .sound-toggle {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 5; /* por encima de .overlays */
+        pointer-events: auto;
+        -webkit-tap-highlight-color: transparent;
+        border: 0;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+        font: 600 14px/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 6px 20px rgba(0,0,0,.35);
+        cursor: pointer;
+    }
+    .sound-toggle[aria-pressed="true"] { background: rgba(0, 180, 80, 0.18); }
+    .sound-toggle:focus-visible { outline: 2px solid #7dd3fc; outline-offset: 2px; }
 
 
     /* --- Ayudas visuales opcionales para debug  --- */
@@ -157,6 +243,22 @@
             top: 35%;
             width: 100%;
         }
+            .box-titular h1 {
+                font: 2rem / 0.8 'glitch_sevenregular';
+                margin: 0 auto 10px;
+            }
+
+        .item {
+            --x: var(--x-m, var(--x));
+            --y: var(--y-m, var(--y));
+            --w: var(--w-m, var(--w));
+            --tx-final: var(--tx-final-m, var(--tx-final));
+            --ty-final: var(--ty-final-m, var(--ty-final));
+            --enter-offset-x: var(--enter-offset-x-m, var(--enter-offset-x));
+            --enter-offset-y: var(--enter-offset-y-m, var(--enter-offset-y));
+         }
+
+
         .item.bg-1 { 
             --w: 52;
             --x: 20; 
@@ -168,9 +270,9 @@
             --y: 76;
         }
         .item.bg-3 {         
-            --w: 55; 
-            --x: 22; 
-            --y: 83;
+            --w: 45; 
+            --x: 14; 
+            --y: 20;
         }
         .item.bg-4 {         
             --w: 41; 
@@ -186,12 +288,21 @@
         .item.video-2{
             --w: 50;
             --x: 22; 
-            --y: 41; 
+            --y: 35; 
         }
         .item.video-3{
             --w: 60;
             --x: 47; 
             --y: 84; 
+        }
+
+        .item[data-anim="right"], 
+        .item[data-anim="left"] { 
+            --enter-vw: 70vw; 
+        }
+        .item[data-anim="top"], 
+        .item[data-anim="bottom"] { 
+            --enter-vh: 75vh; 
         }
 
     }
