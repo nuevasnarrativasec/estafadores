@@ -28,10 +28,10 @@
     .scene .flecha-bajar {
         bottom: 10%;
         cursor: pointer;
-
+        left: 50%;
         margin: 0 auto;
         max-width: 40px;
-        position: relative;
+        position: absolute;
         z-index: 10;
     }
         .flecha-bajar {
@@ -52,12 +52,10 @@
         top: 0;        
     }
         .box-titular{
-            left: 50%;
+            margin: 40px auto;
             max-width: 650px;
-            position: absolute;
+            position: relative;
             text-align: center;
-            top: 50%;;
-            transform: translate(-50%, -50%);
             z-index: 2;
         }
             .box-titular h1{
@@ -105,7 +103,7 @@
             top:  calc(var(--y, 50) * 1%);
             width: clamp(140px, var(--w, 30) * 1vw, 60vmin);
             transform: translate(-50%, -50%) translateY(16px) scale(0.985);
-            opacity: 0;
+            opacity: 1;
             filter: drop-shadow(0 6px 24px rgba(0,0,0,0.35));
             transition: opacity 480ms ease, transform 600ms cubic-bezier(.2,.65,.2,1);
         }
@@ -117,7 +115,6 @@
             display: block;
             width: 100%;
             height: auto;
-            border-radius: clamp(8px, 1.2vmin, 24px);
         }
 
     /* --- Pasos invisibles que controlan el reveal --- */
@@ -130,51 +127,97 @@
     }
 
     .item.bg-1 {         
-        --w: 21; 
-        --x: 15; 
-        --y: 30;
-        --enter-offset-x: 120vw;
-        --tx-final: -50%;        
+        --w: 13; 
+        --x: 5;
+        --y: 20;
+        --enter-offset-x: 0vw;
+        --tx-final: 120%;        
     }
     .item.bg-2 {         
-        --w: 25; 
-        --x: 65; 
-        --y: 65;
-        --enter-offset-y: 120vw;
-        --ty-final: -50%;      
+        --w: 20; 
+        --x: 9; 
+        --y: 40;
+        --enter-offset-x: 0vw;
+        --tx-final: 50%;      
     }
+        .item.bg-2.visible {         
+            --w: 20; 
+            --x: 9; 
+            --y: 55;
+            --enter-offset-x: 0vw;
+            --tx-final: 50%;      
+        }
     .item.bg-3 {         
-        --w: 17; 
-        --x: 40; 
-        --y: 48;
+        --w: 15; 
+        --x: 5; 
+        --y: 60;
+        --enter-offset-x: 0vw;
+        --tx-final: 120%;        
     }
+        .item.bg-3.visible {         
+            --w: 17; 
+            --x: 10; 
+            --y: 48;
+            --enter-offset-x: 0vw;
+            --tx-final: 120%;        
+        }
     .item.bg-4 {         
-        --w: 16;
-        --x: 88;
-        --y: 68;
+        --w: 10;
+        --x: 80;
+        --y: 48;
+        --enter-offset-x: 10vw;
+        --tx-final: -50%;  
     }
+        .item.bg-4.visible {         
+            --w: 16;
+            --x: 88;
+            --y: 68;
+            --enter-offset-x: 10vw;
+            --tx-final: -200%;  
+        }
 
     .item.video-1{
-        --w: 30;
-        --x: 68; 
-        --y: 24; 
-        --enter-offset-x: 50vw;
-        --tx-final: -10%;        
+        --w: 15;
+        --x: 75; 
+        --y: 21; 
+        --enter-offset-x: 10vw;
+        --tx-final: -50%;        
     }
+        .item.video-1.visible{
+            --w: 25;
+            --x: 73; 
+            --y: 21; 
+            --enter-offset-x: 10vw;
+            --tx-final: -50%;        
+        }
     .item.video-2{
         --w: 24;
-        --x: 20; 
-        --y: 38; 
-        --enter-offset-y: -120vw;
-        --ty-final: 50%;      
+        --x: 10; 
+        --y: 85; 
+        --enter-offset-y: 0vw;
+        --ty-final: -50%;      
     }
+        .item.video-2.visible{
+            --w: 24;
+            --x: 20; 
+            --y: 85; 
+            --enter-offset-y: 0vw;
+            --ty-final: -50%;      
+        }
     .item.video-3{
         --w: 33;
-        --x: 50; 
-        --y: 72; 
-        --enter-offset-y: -120vw;
+        --x: 80; 
+        --y: 80; 
+        --enter-offset-y: 0vw;
         --ty-final: -90%;      
     }
+        .item.video-3.visible{
+            --w: 24;
+            --x: 80; 
+            --y: 95; 
+            --enter-offset-y: 0vw;
+            --ty-final: -150%;      
+        }
 
     /* === Variantes de entrada (dinámicas) ===
        Usa data-anim="right|left|top|bottom" en cada .item para definir la dirección de entrada.
@@ -189,7 +232,7 @@
         }
 
     .item[data-anim="left"] {
-        transform: translate(calc(-50% - var(--enter-offset-x, 110vw)), -50%) scale(0.98);
+        transform: translate(calc(-50% - var(--enter-offset-x, 110vw)), -50%) scale(0.5);
     }
         .item[data-anim="left"].visible {
             transform: translate(var(--tx-final, -10%), -50%) scale(1);
@@ -203,7 +246,7 @@
         }
 
     .item[data-anim="bottom"] {
-        transform: translate(-50%, calc(-50% - var(--enter-offset-y, 110vh))) scale(0.98);
+        transform: translate(-50%, calc(-50% - var(--enter-offset-y, 110vh))) scale(0.5);
     }
         .item[data-anim="bottom"].visible {
             transform: translate(-50%, var(--ty-final, -50%)) scale(1);
@@ -309,10 +352,6 @@
 
     @media (max-width: 768px) {
       .item { width: clamp(120px, var(--w, 46) * 1vw, 70vmin); }
-
-    }
-
-
-    
+    }   
 
     .bg picture { width: 100%; height: 100%; display: block; }
